@@ -30,4 +30,28 @@ router.post('/', async (req,res,next)=>{
     }
 })
 
+router.put('/:id', async (req,res,next)=>{
+    try{
+        const {amt} = req.body
+        const{id} = req.params
+        const results = await db.query(`UPDATE invoices SET amt=$1 WHERE id=$2 RETURNING *`,[amt,id])
+        if(results.rows.length == 0) throw new ExpressError(`Cannot update invoice of id ${id}`)
+        return res.json({ invoice: results.rows[0]})
+    }catch(e){
+        next(e)
+    }
+})
+
+router.delete('/:id', async (req,res,next)=>{
+    try{
+        const{id} = req.params
+        const results = await db.query(`DELETE FROM invoices WHERE id=$1`,[id])
+        return res.json({status:'Deleted.'})
+    }catch(e){
+        next(e)
+    }
+})
+
+
+
 module.exports = router;
