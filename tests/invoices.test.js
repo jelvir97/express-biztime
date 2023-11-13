@@ -78,3 +78,20 @@ describe('POST /invoices', ()=>{
         expect(resp.statusCode).toEqual(500)
     })
 })
+
+describe('PUT /invoices/:id', ()=>{
+    test('updates existing invoice',async ()=>{
+        const resp = await request(app).put(`/invoices/${test_inv.id}`).send({amt: .5})
+
+        expect(resp.statusCode).toEqual(200)
+        expect(resp.body.invoice.amt).toEqual(.5)
+        expect(resp.body.invoice.comp_code).toEqual('abc')
+    })
+
+    test('fails with invalid id', async ()=>{
+        const resp = await request(app).put(`/invoices/999`).send({amt: .5})
+
+        expect(resp.statusCode).toEqual(404)
+        expect(resp.body).toEqual({error:{message:'Cannot update invoice of id 999',status:404}})
+    })
+})

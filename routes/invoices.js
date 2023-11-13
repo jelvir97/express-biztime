@@ -35,7 +35,7 @@ router.put('/:id', async (req,res,next)=>{
         const {amt} = req.body
         const{id} = req.params
         const results = await db.query(`UPDATE invoices SET amt=$1 WHERE id=$2 RETURNING *`,[amt,id])
-        if(results.rows.length == 0) throw new ExpressError(`Cannot update invoice of id ${id}`)
+        if(results.rows.length == 0) throw new ExpressError(`Cannot update invoice of id ${id}`,404)
         return res.json({ invoice: results.rows[0]})
     }catch(e){
         next(e)
