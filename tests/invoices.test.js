@@ -41,3 +41,20 @@ describe('GET /invoices', ()=>{
         expect(resp.statusCode).toEqual(200)
     })
 })
+
+describe('GET /invoice/:id',()=>{
+    test('returns single invoice based off of id', async ()=>{
+        const resp = await request(app).get(`/invoices/${test_inv.id}`)
+
+        expect(resp.statusCode).toEqual(200)
+        expect(resp.body.amt).toEqual(test_inv.amt)
+        expect(resp.body.comp_code).toEqual(test_inv.comp_code)
+    })
+
+    test('fails to return due to invalid id',async ()=>{
+        const resp = await request(app).get('/invoices/999')
+
+        expect(resp.statusCode).toEqual(404)
+        expect(resp.body).toEqual({"error": {"message": "Could not find invoice with id of 999", "status": 404}})
+    })
+})
