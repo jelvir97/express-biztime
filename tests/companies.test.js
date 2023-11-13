@@ -19,7 +19,15 @@ afterEach(async()=>{
     await db.query('DELETE FROM companies')
 })
 
+describe('GET /companies route', ()=>{
+    test('returns list of companies', async ()=>{
+        const resp = await request(app).get('/companies')
+        expect(resp.body).toEqual({companies: [ { code: 'abc', name: 'ABC', description: 'alphabet' } ]})
+        expect(resp.statusCode).toEqual(200)
+        expect(resp.body.companies.length).toEqual(1)
+    })
+})
+
 afterAll(async ()=>{
     await db.end();
 })
-
