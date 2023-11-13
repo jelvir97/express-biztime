@@ -41,7 +41,7 @@ router.put('/:code', async (req, res, next) => {
       const { name, description } = req.body;
       const results = await db.query('UPDATE companies SET name=$1, description=$2 WHERE code=$3 RETURNING code, name, description', [name, description, code])
       if (results.rows.length === 0) {
-        throw new ExpressError(`Can't update company with id of ${id}`, 404)
+        throw new ExpressError(`Can't update company with id of ${code}`, 404)
       }
       return res.send({ company: results.rows[0] })
     } catch (e) {

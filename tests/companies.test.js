@@ -39,7 +39,7 @@ describe('GET /companies/:id route', ()=>{
     test('throws error not found with invalid company code', async ()=>{
         const resp = await request(app).get('/companies/acb')
         expect(resp.statusCode).toEqual(404)
-        expect(resp.body).toEqual({"error": {"message": "Company code acb not found", "status": 404}, "message": "Company code acb not found"})
+        expect(resp.body).toEqual({"error": {"message": "Company code acb not found", "status": 404}})
     })
 })
 
@@ -54,7 +54,23 @@ describe('POST /companies route', ()=>{
     test('fails insert due to invalid request',async ()=>{
         // No handling for this error but tested for internal error
         const resp = await request(app).post('/companies').send({name:"IBM",description:"We make stuff"})
-        expected(resp.statusCode).toEqual(500)
+        expect(resp.statusCode).toEqual(500)
+    })
+})
+
+describe('PUT /companies/:id', ()=>{
+    test('updates company with code "abc"',async ()=>{
+        const resp = await request(app).put('/companies/abc').send({name:'XYZ', description:"testtest"})
+
+        expect(resp.statusCode).toEqual(200)
+        expect(resp.body).toEqual({company: { code: 'abc', name: 'XYZ', description: 'testtest'}})
+    })
+
+    test('fails update due to invalid code', async ()=>{
+        const resp = await request(app).put('/companies/acb').send({name:'XYZ', description:"testtest"})
+
+        expect(resp.statusCode).toEqual(404)
+        expect(resp.body).toEqual({"error": {"message": "Can't update company with id of acb", "status": 404}})
     })
 })
 
