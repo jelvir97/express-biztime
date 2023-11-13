@@ -74,6 +74,17 @@ describe('PUT /companies/:id', ()=>{
     })
 })
 
+describe('DELETE /companies/:id', ()=>{
+    test('deletes company with id of abc',async ()=>{
+        const resp1 = await request(app).delete('/companies/abc')
+        expect(resp1.statusCode).toEqual(200)
+
+        const resp2 = await request(app).get('/companies')
+
+        expect(resp2.body).toEqual({"companies": []})
+    })
+})
+
 afterAll(async ()=>{
     await db.end();
 })
