@@ -34,7 +34,18 @@ router.put('/:id', async (req,res,next)=>{
     try{
         const {amt} = req.body
         const{id} = req.params
-        const results = await db.query(`UPDATE invoices SET amt=$1 WHERE id=$2 RETURNING *`,[amt,id])
+        let results
+        if('paid' in req.body){
+            console.log('inside if paid statment')
+            const paid = req.body.paid
+            console.log(paid)
+            const paid_date = paid ? new Date() : null;
+            console.log(paid_date)
+            results = await db.query(`UPDATE invoices SET amt=$1, paid=$2, paid_date=$3 WHERE id=$4 RETURNING *`,[amt,paid,paid_date,id])
+        }else{
+            results = await db.query(`UPDATE invoices SET amt=$1 WHERE id=$2 RETURNING *`,[amt,id])
+        }
+        console.log(results)
         if(results.rows.length == 0) throw new ExpressError(`Cannot update invoice of id ${id}`,404)
         return res.json({ invoice: results.rows[0]})
     }catch(e){
