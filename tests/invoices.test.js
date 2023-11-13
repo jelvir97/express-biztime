@@ -95,3 +95,13 @@ describe('PUT /invoices/:id', ()=>{
         expect(resp.body).toEqual({error:{message:'Cannot update invoice of id 999',status:404}})
     })
 })
+
+describe('DELETE /invoices/:id',()=>{
+    test('deletes invoice', async()=>{
+        const resp = await request(app).delete(`/invoices/${test_inv.id}`)
+
+        expect(resp.statusCode).toEqual(200)
+        expect(resp.body).toEqual({status:'Deleted.'})
+    })
+})
+
