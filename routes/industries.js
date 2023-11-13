@@ -24,4 +24,17 @@ router.get('/',async (req,res,next)=>{
     }
 })
 
+
+router.post('/',async (req,res,next)=>{
+    try{
+        const {code,industry} = req.body
+        console.log(req.body)
+        const results = await db.query('INSERT INTO industries VALUES ( $1 , $2 ) RETURNING *',[code,industry])
+
+        return res.json(results.rows[0])
+    }catch(e){
+        next(e)
+    }
+})
+
 module.exports = router
