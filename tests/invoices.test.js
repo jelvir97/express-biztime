@@ -42,7 +42,7 @@ describe('GET /invoices', ()=>{
     })
 })
 
-describe('GET /invoice/:id',()=>{
+describe('GET /invoices/:id',()=>{
     test('returns single invoice based off of id', async ()=>{
         const resp = await request(app).get(`/invoices/${test_inv.id}`)
 
@@ -56,5 +56,25 @@ describe('GET /invoice/:id',()=>{
 
         expect(resp.statusCode).toEqual(404)
         expect(resp.body).toEqual({"error": {"message": "Could not find invoice with id of 999", "status": 404}})
+    })
+})
+
+describe('POST /invoices', ()=>{
+    test('returns created invoice',async ()=>{
+        const resp = await request(app).post('/invoices').send({comp_code:'abc',amt:1.99})
+
+        expect(resp.statusCode).toEqual(201)
+        expect(resp.body.invoice.comp_code).toEqual('abc')
+        expect(resp.body.invoice.amt).toEqual(1.99)
+    })
+
+    test('fails with invalid comp code',async ()=>{
+        const resp = await request(app).post('/invoices').send({comp_code:'xyz',amt:1.99})
+        expect(resp.statusCode).toEqual(500)
+    })
+
+    test('fails with no amt', async ()=>{
+        const resp = await request(app).post('/invoices').send({comp_code:'abc'})
+        expect(resp.statusCode).toEqual(500)
     })
 })
